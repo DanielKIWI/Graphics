@@ -37,10 +37,8 @@ namespace UnityEditor.ShaderGraph
             using (vertexInputs.BlockSemicolonScope())
             {
                 vertexInputs.AppendLine("float4 vertex : POSITION;");
-                if(graphRequirements.requiresNormal != NeededCoordinateSpace.None || graphRequirements.requiresBitangent != NeededCoordinateSpace.None)
-                    vertexInputs.AppendLine("float3 normal : NORMAL;");
-                if(graphRequirements.requiresTangent != NeededCoordinateSpace.None || graphRequirements.requiresBitangent != NeededCoordinateSpace.None)
-                    vertexInputs.AppendLine("float4 tangent : TANGENT;");
+                vertexInputs.AppendLine("float3 normal : NORMAL;");
+                vertexInputs.AppendLine("float4 tangent : TANGENT;");
                 if (graphRequirements.requiresVertexColor)
                 {
                     vertexInputs.AppendLine("float4 color : COLOR;");
