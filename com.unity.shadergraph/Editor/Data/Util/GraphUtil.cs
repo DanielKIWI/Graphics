@@ -918,10 +918,8 @@ namespace UnityEditor.ShaderGraph
             using (vertexInputs.BlockSemicolonScope())
             {
                 vertexInputs.AppendLine("float4 vertex : POSITION;");
-                if(graphRequiements.requiresNormal != NeededCoordinateSpace.None)
-                    vertexInputs.AppendLine("float3 normal : NORMAL;");
-                if(graphRequiements.requiresTangent != NeededCoordinateSpace.None)
-                    vertexInputs.AppendLine("float4 tangent : TANGENT;");
+                vertexInputs.AppendLine("float3 normal : NORMAL;");
+                vertexInputs.AppendLine("float4 tangent : TANGENT;");
                 if (graphRequiements.requiresVertexColor)
                 {
                     vertexInputs.AppendLine("float4 color : COLOR;");
