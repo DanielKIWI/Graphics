@@ -179,6 +179,7 @@ namespace UnityEngine.Rendering.HighDefinition
         UberPost,
         FXAA,
         SMAA,
+        CMAA2,
         FinalPost,
         CustomPostProcessBeforePP,
         CustomPostProcessAfterPP,
