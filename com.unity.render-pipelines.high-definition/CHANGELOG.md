@@ -282,6 +282,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Fixing wrong behavior in ray traced shadows for mesh renderers if their cast shadow is shadow only or double sided
 - Only tracing rays for shadow if the point is inside the code for spotlight shadows
 - Only tracing rays if the point is inside the range for point lights
+- Temporal Anti aliasing improvements.
 - Fixing ghosting issues when the screen space shadow  indexes change for a light with ray traced shadows
 - Fixed an issue with stencil management and Xbox One build that caused corrupted output in deferred mode.
 - Fixed a mismatch in behavior between the culling of shadow maps and ray traced point and spot light shadows

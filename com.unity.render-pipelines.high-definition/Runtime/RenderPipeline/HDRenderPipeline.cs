@@ -4373,6 +4373,7 @@ namespace UnityEngine.Rendering.HighDefinition
                 lightingBuffer: null,
                 finalRT: destination,
                 depthBuffer: m_SharedRTManager.GetDepthStencilBuffer(),
+                depthMipChain: m_SharedRTManager.GetDepthTexture(),
                 flipY: flipInPostProcesses
             );
         }
