@@ -176,6 +176,11 @@ namespace UnityEngine.Rendering.HighDefinition
         internal Vector4[]              frustumPlaneEquations;
         internal int                    taaFrameIndex;
         internal float                  taaSharpenStrength;
+        internal float                  taaHistorySharpening;
+        internal float                  taaAntiFlicker;
+        internal float                  taaMotionVectorRejection;
+        internal bool                   taaAntiRinging;
+
         internal Vector4                zBufferParams;
         internal Vector4                unity_OrthoParams;
         internal Vector4                projectionParams;
@@ -288,6 +293,7 @@ namespace UnityEngine.Rendering.HighDefinition
         internal AntialiasingMode antialiasing { get; private set; } = AntialiasingMode.None;
 
         internal HDAdditionalCameraData.SMAAQualityLevel SMAAQuality { get; private set; } = HDAdditionalCameraData.SMAAQualityLevel.Medium;
+        internal HDAdditionalCameraData.TAAQualityLevel TAAQuality { get; private set; } = HDAdditionalCameraData.TAAQualityLevel.Medium;
 
         internal bool resetPostProcessingHistory = true;
 
@@ -859,7 +865,13 @@ namespace UnityEngine.Rendering.HighDefinition
                 {
                     antialiasing = m_AdditionalCameraData.antialiasing;
                     SMAAQuality = m_AdditionalCameraData.SMAAQuality;
+                    TAAQuality = m_AdditionalCameraData.TAAQuality;
                     taaSharpenStrength = m_AdditionalCameraData.taaSharpenStrength;
+                    taaHistorySharpening = m_AdditionalCameraData.taaHistorySharpening;
+                    taaAntiFlicker = m_AdditionalCameraData.taaAntiFlicker;
+                    taaAntiRinging = m_AdditionalCameraData.taaAntiHistoryRinging;
+                    taaMotionVectorRejection = m_AdditionalCameraData.taaMotionVectorRejection;
+
                 }
                 else
                     antialiasing = AntialiasingMode.None;

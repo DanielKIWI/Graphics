@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 Version Updated
 The version number for this package has increased due to a version update of a related graphics package.
 
+### Fixed
+- Fix erroneous central depth sampling in TAA.
+- Small adjustments to TAA anti flicker (more aggressive on high values).
+- Fixed taaFrameIndex
+- Slightly changed the TAA anti-flicker mechanism so that it is more aggressive on almost static images (only on High preset for now).
+- Temporal Anti aliasing improvements.
+
+
 ## [7.4.0] - 2020-05-22
 
 ### Added
