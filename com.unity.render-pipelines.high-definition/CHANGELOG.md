@@ -305,6 +305,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Fixed the diffusion profile list not saved when clicking the fix button in the material UI.
 - Fixed crash when pushing bounce count higher than 1 for ray traced GI or reflections
 - Fixed PCSS softness scale so that it better match ray traced reference for punctual lights. 
+- Slightly changed the TAA anti-flicker mechanism so that it is more aggressive on almost static images (only on High preset for now).
 - Fixed exposure management for the path tracer
 - Fixed AxF material UI containing two advanced options settings.
 - Fixed an issue where cached sky contexts were being destroyed wrongly, breaking lighting in the LookDev
