@@ -150,6 +150,8 @@ namespace UnityEditor.ShaderGraph
                 typeof(Texture2DAssetNode ),
                 typeof(Texture3DAssetNode ),
                 typeof(SampleVirtualTextureNode ),
+                typeof(ProceduralTexture2DNode ),
+                typeof(SampleProceduralTexture2DNode ),                
 #if PROCEDURAL_VT_IN_GRAPH
                 typeof(ProceduralVirtualTextureNode ),
 #endif // PROCEDURAL_VT_IN_GRAPH

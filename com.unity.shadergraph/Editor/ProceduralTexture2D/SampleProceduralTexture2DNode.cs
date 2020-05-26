@@ -1,5 +1,6 @@
 using System.Linq;
 using UnityEditor.Graphing;
+using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 
 namespace UnityEditor.ShaderGraph
@@ -86,13 +87,13 @@ namespace UnityEditor.ShaderGraph
                 InvTinputId, CompressionScalersId, ColorSpaceOriginId, ColorSpaceVector1Id, ColorSpaceVector2Id, ColorSpaceVector3Id, InputSizeId });
         }
 
-        public override void ValidateNode()
+        public override void Setup()
         {
-            base.ValidateNode();
+            base.Setup();
         }
 
         // Node generations
-        public virtual void GenerateNodeCode(ShaderGenerator visitor, GraphContext graphContext, GenerationMode generationMode)
+        public void GenerateNodeCode(ShaderStringBuilder sb, GenerationMode generationMode)
         {
             ProceduralTexture2DInputMaterialSlot slot = FindInputSlot<ProceduralTexture2DInputMaterialSlot>(ProceduralTexture2DId);
 
@@ -102,19 +103,18 @@ namespace UnityEditor.ShaderGraph
             if (edges.Any())
             {
                 var fromSocketRef = edges[0].outputSlot;
-                var fromNode = owner.GetNodeFromGuid<ProceduralTexture2DNode>(fromSocketRef.nodeGuid);
+                var fromNode = owner.GetNodeFromId<ProceduralTexture2DNode>(fromSocketRef.node.objectId);
                 if (fromNode != null)
                     proceduralTexture2D = fromNode.proceduralTexture2D;
             }
-
             // No Procedural Texture 2D Asset found, break and initialize output values to default white
             if (proceduralTexture2D == null || proceduralTexture2D.Tinput == null || proceduralTexture2D.invT == null)
             {
-                visitor.AddShaderChunk(string.Format("{0}4 {1} = float4(1, 1, 1, 1);", precision, GetVariableNameForSlot(OutputSlotRGBAId)), true);
-                visitor.AddShaderChunk(string.Format("{0} {1} = {2}.r;", precision, GetVariableNameForSlot(OutputSlotRId), GetVariableNameForSlot(OutputSlotRGBAId)), true);
-                visitor.AddShaderChunk(string.Format("{0} {1} = {2}.g;", precision, GetVariableNameForSlot(OutputSlotGId), GetVariableNameForSlot(OutputSlotRGBAId)), true);
-                visitor.AddShaderChunk(string.Format("{0} {1} = {2}.b;", precision, GetVariableNameForSlot(OutputSlotBId), GetVariableNameForSlot(OutputSlotRGBAId)), true);
-                visitor.AddShaderChunk(string.Format("{0} {1} = {2}.a;", precision, GetVariableNameForSlot(OutputSlotAId), GetVariableNameForSlot(OutputSlotRGBAId)), true);
+                sb.AppendLine(string.Format("$precision4 {0} = $precision4(1, 1, 1, 1);", GetVariableNameForSlot(OutputSlotRGBAId)), true);
+                sb.AppendLine(string.Format("$precision {0} = {1}.r;", GetVariableNameForSlot(OutputSlotRId), GetVariableNameForSlot(OutputSlotRGBAId)), true);
+                sb.AppendLine(string.Format("$precision {0} = {1}.g;", GetVariableNameForSlot(OutputSlotGId), GetVariableNameForSlot(OutputSlotRGBAId)), true);
+                sb.AppendLine(string.Format("$precision {0} = {1}.b;", GetVariableNameForSlot(OutputSlotBId), GetVariableNameForSlot(OutputSlotRGBAId)), true);
+                sb.AppendLine(string.Format("$precision {0} = {1}.a;", GetVariableNameForSlot(OutputSlotAId), GetVariableNameForSlot(OutputSlotRGBAId)), true);
                 return;
             }
 
@@ -223,24 +223,27 @@ namespace UnityEditor.ShaderGraph
 
             code = code.Replace("{11}", GetSlotValue(BlendId, generationMode));
 
-            visitor.AddShaderChunk(code, true);
+            sb.AppendLines(code);
 
-            visitor.AddShaderChunk(string.Format("{0} {1} = {2}.r;", precision, GetVariableNameForSlot(OutputSlotRId), GetVariableNameForSlot(OutputSlotRGBAId)), true);
-            visitor.AddShaderChunk(string.Format("{0} {1} = {2}.g;", precision, GetVariableNameForSlot(OutputSlotGId), GetVariableNameForSlot(OutputSlotRGBAId)), true);
-            visitor.AddShaderChunk(string.Format("{0} {1} = {2}.b;", precision, GetVariableNameForSlot(OutputSlotBId), GetVariableNameForSlot(OutputSlotRGBAId)), true);
-            visitor.AddShaderChunk(string.Format("{0} {1} = {2}.a;", precision, GetVariableNameForSlot(OutputSlotAId), GetVariableNameForSlot(OutputSlotRGBAId)), true);
+            sb.AppendLine(string.Format("$precision {0} = {1}.r;", GetVariableNameForSlot(OutputSlotRId), GetVariableNameForSlot(OutputSlotRGBAId)), true);
+            sb.AppendLine(string.Format("$precision {0} = {1}.g;", GetVariableNameForSlot(OutputSlotGId), GetVariableNameForSlot(OutputSlotRGBAId)), true);
+            sb.AppendLine(string.Format("$precision {0} = {1}.b;", GetVariableNameForSlot(OutputSlotBId), GetVariableNameForSlot(OutputSlotRGBAId)), true);
+            sb.AppendLine(string.Format("$precision {0} = {1}.a;", GetVariableNameForSlot(OutputSlotAId), GetVariableNameForSlot(OutputSlotRGBAId)), true);
         }
 
         public bool RequiresMeshUV(UVChannel channel, ShaderStageCapability stageCapability)
         {
-            s_TempSlots.Clear();
-            GetInputSlots(s_TempSlots);
-            foreach (var slot in s_TempSlots)
+            using (var tempSlots = PooledList<MaterialSlot>.Get())
             {
-                if (slot.RequiresMeshUV(channel))
-                    return true;
+                tempSlots.Clear();
+                GetInputSlots(tempSlots);
+                foreach (var slot in tempSlots)
+                {
+                    if (slot.RequiresMeshUV(channel))
+                        return true;
+                }
+                return false;
             }
-            return false;
         }
     }
 }
