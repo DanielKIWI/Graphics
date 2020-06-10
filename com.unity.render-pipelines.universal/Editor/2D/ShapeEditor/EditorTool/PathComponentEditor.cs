@@ -49,9 +49,9 @@ namespace UnityEditor.Experimental.Rendering.Universal.Path2D
                     if (check.changed)
                     {
                         if (isActive)
-                            ToolManager.SetActiveTool<U>();
+                            EditorTools.EditorTools.SetActiveTool<U>();
                         else
-                            ToolManager.RestorePreviousTool();
+                            EditorTools.EditorTools.RestorePreviousTool();
                     }
                 }
             }

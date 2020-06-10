@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Collections.Generic;
 using UnityEditor.ShaderGraph;
@@ -173,6 +173,7 @@ namespace UnityEditor.Rendering.Universal.ShaderGraph
                 // Conditional State
                 renderStates = CoreRenderStates.Default,
                 pragmas = CorePragmas._2DDefault,
+                keywords = SpriteLitKeywords.ETCExternalAlpha,
                 includes = SpriteLitIncludes.Forward,
             };
         }
@@ -228,10 +229,16 @@ namespace UnityEditor.Rendering.Universal.ShaderGraph
         {
             public static KeywordCollection Lit = new KeywordCollection
             {
+                { CoreKeywordDescriptors.ETCExternalAlpha },
                 { CoreKeywordDescriptors.ShapeLightType0 },
                 { CoreKeywordDescriptors.ShapeLightType1 },
                 { CoreKeywordDescriptors.ShapeLightType2 },
                 { CoreKeywordDescriptors.ShapeLightType3 },
+            };
+
+            public static KeywordCollection ETCExternalAlpha = new KeywordCollection
+            {
+                { CoreKeywordDescriptors.ETCExternalAlpha },
             };
         }
 #endregion
