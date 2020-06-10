@@ -143,7 +143,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Added presets quality settings for RTAO and RTGI.
 - Added an override for the shadow culling that allows better directional shadow maps in ray tracing effects (RTR, RTGI, RTSSS and RR).
 - Added a Cloud Layer volume override.
-- Added Fast Memory support for platform that support it.
 - Added CPU and GPU timings for ray tracing effects.
 - Added support to combine RTSSS and RTGI (1248733).
 - Added IES Profile support for Point, Spot and Rectangular-Area lights
