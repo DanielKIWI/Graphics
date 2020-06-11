@@ -160,8 +160,6 @@ public class ProceduralTexture2DEditor : Editor
     const float GAUSSIAN_AVERAGE = 0.5f;    // Expectation of the Gaussian distribution
     const float GAUSSIAN_STD = 0.1666f;     // Std of the Gaussian distribution
     const int LUT_WIDTH = 128;              // Size of the look-up table
-    private static int stepCounter = 0;
-    private static int totalSteps = 0;
 
     struct TextureData
     {
@@ -204,11 +202,6 @@ public class ProceduralTexture2DEditor : Editor
         if (target.input == null)
             return;
 
-        // Init progress bar
-        stepCounter = 0;
-        totalSteps = (target.type != ProceduralTexture2D.TextureType.Other ? 4 : 0) + (target.type != ProceduralTexture2D.TextureType.Other ? 9 : 12) + 1;
-        EditorUtility.DisplayProgressBar("Pre-processing Procedural Texture Data", target.name, (float)stepCounter / (totalSteps - 1));
-
         // Section 1.4 Improvement: using a decorrelated color space for Color RGB and Normal XYZ textures
         TextureFormat inputFormat = TextureFormat.RGB24;
         TextureData albedoData = TextureToTextureData(target.input, ref inputFormat);
@@ -227,14 +220,12 @@ public class ProceduralTexture2DEditor : Editor
         Precomputations(ref decorrelated, channelsToProcess, ref Tinput, ref invT, target.name);
 
         RescaleForCompression(target, ref Tinput);
-        EditorUtility.DisplayProgressBar("Pre-processing Procedural Texture Data", target.name, (float)stepCounter++ / (totalSteps - 1));
 
         // Serialize precomputed data and setup material
         FinalizePrecomputedTextures(ref inputFormat, target, ref Tinput, ref invT);
 
         target.memoryUsageBytes = target.Tinput.GetRawTextureData().Length + target.invT.GetRawTextureData().Length;
 
-        EditorUtility.ClearProgressBar();
 
         // Update current applied settings
         target.currentInput = target.input;
@@ -340,21 +331,18 @@ public class ProceduralTexture2DEditor : Editor
         foreach (int channel in channels)
         {
             ComputeTinput(ref input, ref Tinput, channel);
-            EditorUtility.DisplayProgressBar("Pre-processing Procedural Texture Data", assetName, (float)stepCounter++ / (totalSteps - 1));
         }
 
         // Section 1.3.3 Precomputing the inverse histogram transformation T^{-1}
         foreach (int channel in channels)
         {
             ComputeinvT(ref input, ref invT, channel);
-            EditorUtility.DisplayProgressBar("Pre-processing Procedural Texture Data", assetName, (float)stepCounter++ / (totalSteps - 1));
         }
 
         // Section 1.5 Improvement: prefiltering the look-up table
         foreach (int channel in channels)
         {
             PrefilterLUT(ref Tinput, ref invT, channel);
-            EditorUtility.DisplayProgressBar("Pre-processing Procedural Texture Data", assetName, (float)stepCounter++ / (totalSteps - 1));
         }
     }
 
@@ -742,7 +730,6 @@ public class ProceduralTexture2DEditor : Editor
         // Compute the eigenvectors of the histogram
         Vector3[] eigenvectors = new Vector3[3];
         ComputeEigenVectors(ref input, eigenvectors);
-        EditorUtility.DisplayProgressBar("Pre-processing Procedural Texture Data", assetName, (float)stepCounter++ / (totalSteps - 1));
 
         // Rotate to eigenvector space
         for (int y = 0; y < input.height; y++)
@@ -757,7 +744,6 @@ public class ProceduralTexture2DEditor : Editor
                     // Store
                     input_decorrelated.GetColorRef(x, y)[channel] = new_channel_value;
                 }
-        EditorUtility.DisplayProgressBar("Pre-processing Procedural Texture Data", assetName, (float)stepCounter++ / (totalSteps - 1));
 
         // Compute ranges of the new color space
         Vector2[] colorSpaceRanges = new Vector2[3]{
@@ -771,7 +757,6 @@ public class ProceduralTexture2DEditor : Editor
                     colorSpaceRanges[channel].x = Mathf.Min(colorSpaceRanges[channel].x, input_decorrelated.GetColor(x, y)[channel]);
                     colorSpaceRanges[channel].y = Mathf.Max(colorSpaceRanges[channel].y, input_decorrelated.GetColor(x, y)[channel]);
                 }
-        EditorUtility.DisplayProgressBar("Pre-processing Procedural Texture Data", assetName, (float)stepCounter++ / (totalSteps - 1));
 
         // Remap range to [0, 1]
         for (int y = 0; y < input.height; y++)
@@ -785,7 +770,6 @@ public class ProceduralTexture2DEditor : Editor
                     // Store
                     input_decorrelated.GetColorRef(x, y)[channel] = remapped_value;
                 }
-        EditorUtility.DisplayProgressBar("Pre-processing Procedural Texture Data", assetName, (float)stepCounter++ / (totalSteps - 1));
 
         // Compute color space origin and vectors scaled for the normalized range
         colorSpaceOrigin.x = colorSpaceRanges[0].x * eigenvectors[0].x + colorSpaceRanges[1].x * eigenvectors[1].x + colorSpaceRanges[2].x * eigenvectors[2].x;
