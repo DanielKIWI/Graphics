@@ -6,7 +6,7 @@
     "unityRelease": "2f1",
     "displayName": "High Definition RP",
     "dependencies": {
-        "com.unity.render-pipelines.core": "https://github.com/DanielKIWI/Graphics.git#RPCore-7.3.1-taa-update",
+        "com.unity.render-pipelines.core": "7.3.1",
         "com.unity.shadergraph": "7.3.1",
         "com.unity.visualeffectgraph": "7.3.1",
         "com.unity.render-pipelines.high-definition-config": "7.3.1"
